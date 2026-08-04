@@ -302,8 +302,8 @@
     
     /* ✅ Замените центрирование transform на фиксированное позиционирование ✅ */
     position: fixed;
-    top: 50%; /* Старт по центру вертикали */
-    left: calc(50% - 200px); /* Старт по центру горизонтали (учитывая ширину 400px) */
+    top: 100px;
+    left: 100px;
     
     /* ❌ УДАЛИТЕ ИЛИ ЗАКОММЕНТИРУЙТЕ ЭТУ СТРОКУ ❌ */
     /* transform: translate(-50%, -50%); */
@@ -1854,44 +1854,55 @@ document.getElementById("reset-layout")?.addEventListener("click", () => {
     searchInput.focus();
   }
 });
-    // 1. Укажите селектор вашего нового поисковика-капсулы
-    const searchCapsuleSelector = '.search-container-capsule';
+    const searchCapsule = document.querySelector('.search-container-capsule');
 
-    // 2. Инициализируйте interact.js для этого селектора
-    interact(searchCapsuleSelector)
-        .draggable({
-            // Включаем инерцию для плавности
-            inertia: true,
-            // Ограничиваем перетаскивание пределами окна браузера
-            modifiers: [
-                interact.modifiers.restrictRect({
-                    restriction: 'window',
-                    endOnly: true
-                })
-            ],
-            // Включаем автопрокрутку
-            autoScroll: true,
+  // 1. При загрузке страницы восстанавливаем сохраненные координаты
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedX = localStorage.getItem('search_x');
+    const savedY = localStorage.getItem('search_y');
 
-            // Слушаем события перемещения
-            listeners: {
-                move: dragMoveListener,
-            }
-        });
-
-    // 3. Стандартная функция interact.js для изменения координат при перетаскивании
-    function dragMoveListener (event) {
-        var target = event.target;
-        // сохраняем позицию в атрибутах data-x/data-y
-        var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-        var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-        // применяем CSS transform к элементу
-        target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
-
-        // обновляем позицию в атрибутах
-        target.setAttribute('data-x', x);
-        target.setAttribute('data-y', y);
+    if (savedX !== null && savedY !== null) {
+      searchCapsule.style.transform = `translate(${savedX}px, ${savedY}px)`;
+      searchCapsule.setAttribute('data-x', savedX);
+      searchCapsule.setAttribute('data-y', savedY);
     }
+  });
+
+  // 2. Инициализируем interact.js
+  interact('.search-container-capsule')
+    .draggable({
+      inertia: true,
+      modifiers: [
+        interact.modifiers.restrictRect({
+          restriction: 'window',
+          endOnly: true
+        })
+      ],
+      autoScroll: true,
+      listeners: {
+        move: dragMoveListener,
+        // Сохраняем позиции в localStorage, когда пользователь отпускает элемент
+        end: function (event) {
+          const target = event.target;
+          const x = target.getAttribute('data-x');
+          const y = target.getAttribute('data-y');
+          
+          localStorage.setItem('search_x', x);
+          localStorage.setItem('search_y', y);
+        }
+      }
+    });
+
+  function dragMoveListener (event) {
+    const target = event.target;
+    const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+    const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+    target.style.transform = `translate(${x}px, ${y}px)`;
+
+    target.setAttribute('data-x', x);
+    target.setAttribute('data-y', y);
+  }
   </script>
 
 </body>
