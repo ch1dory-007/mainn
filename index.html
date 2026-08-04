@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Welcome</title>
+
+  <!--
+    Базовые стили страницы.
+    Стили, написанные пользователем в редакторе,
+    будут добавляться отдельно в #custom-style.
+  -->
+  <style>
+    :root {
+      --text-color: #ffffff;
+
+      --glass-background: rgba(255, 255, 255, 0.16);
+      --glass-border: rgba(255, 255, 255, 0.32);
+      --glass-shadow: rgba(0, 0, 0, 0.25);
+
+      --panel-radius: 28px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      min-height: 100vh;
+
+      overflow: hidden;
+
+      color: var(--text-color);
+
+      font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background:
+        url(
+          "https://snipboard.io/I6a1ke.jpg"
+        )
+        
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: none;
+    }
+
+    /* ========================================
+       ГЛАВНЫЙ ИНТЕРФЕЙС
+       ======================================== */
+
+    /* Главный контейнер (Сетка 2х2) */
+    /* Разрешаем свободно расставлять элементы внутри панели */
+    #interface {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+
+      width: min(950px, calc(100vw - 100px));
+      height: 580px; /* Фиксированная высота рабочей области */
+
+      padding: 20px;
+
+      transform: translate(-50%, -50%);
+
+      background: var(--glass-background);
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+
+      border: 1px solid var(--glass-border);
+      border-radius: var(--panel-radius);
+      box-shadow: 0 20px 50px var(--glass-shadow);
+      
+      overflow: hidden;
+    }
+
+    /* Все элементы внутри делают позиционируемыми относительно контейнера */
+    #interface > section,
+    #interface > form {
+      position: absolute; /* Включает свободное перемещение */
+      touch-action: none;
+      user-select: none;
+      cursor: grab;
+      transition: box-shadow 0.2s ease;
+    }
+
+    #interface > section:active,
+    #interface > form:active {
+      cursor: grabbing;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      z-index: 100; /* Перетаскиваемый элемент становится поверх остальных */
+    }
+
+    /* Начальные ширины блоков */
+    #search-form {
+      width: 400px;
+    }
+
+    .calendar-card {
+      width: 250px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 20px;
+      padding: 14px 16px;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+    }
+
+    #notes-container {
+      width: 350px;
+    }
+
+    /* ========================================
+       ЧАСЫ
+       ======================================== */
+
+    #time {
+      text-align: center;
+      user-select: none;
+    }
+
+    #clock {
+      margin: 0;
+      color: #000000;
+      font-size: clamp(64px, 8vw, 110px);
+      font-weight: 800;
+      line-height: 0.7;
+
+      letter-spacing: 4px;
+      margin-top: 20px;
+
+    }
+
+    #date {
+      margin: 18px 0 0;
+
+      font-size: 17px;
+      font-weight: 500;
+
+      opacity: 0.88;
+
+        color: #000000;
+    }
+
+    /* ========================================
+       ПОИСКОВАЯ СТРОКА
+       ======================================== */
+
+    #search-form {
+      width: min(390px, 100%);
+    }
+
+    #searchbar-wrapper {
+      position: relative;
+
+      width: 100%;
+
+      transition:
+        transform 250ms ease;
+    }
+
+    #searchbar-wrapper:hover {
+      transform: scale(1.025);
+    }
+
+    #searchbar {
+      width: 100%;
+      height: 58px;
+
+      padding:
+        0
+        62px
+        0
+        52px;
+
+      color: #1e1e24;
+
+      font-size: 17px;
+
+      outline: none;
+
+      background:
+        rgba(255, 255, 255, 0.76);
+
+      backdrop-filter:
+        blur(15px);
+
+      -webkit-backdrop-filter:
+        blur(15px);
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.6);
+
+      border-radius: 22px;
+
+      box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.14);
+
+      transition:
+        background 200ms ease,
+        border-color 200ms ease,
+        box-shadow 200ms ease;
+    }
+
+    #searchbar:focus {
+      background:
+        rgba(255, 255, 255, 0.92);
+
+      border-color:
+        rgba(255, 255, 255, 0.9);
+
+      box-shadow:
+        0 16px 36px rgba(0, 0, 0, 0.2);
+    }
+
+    #search-icon {
+      position: absolute;
+      top: 50%;
+      left: 19px;
+
+      width: 20px;
+      height: 20px;
+
+      transform: translateY(-50%);
+
+      opacity: 0.65;
+
+      pointer-events: none;
+    }
+
+    #search-submit {
+      position: absolute;
+      top: 50%;
+      right: 9px;
+
+      width: 42px;
+      height: 42px;
+
+      display: grid;
+      place-items: center;
+
+      transform: translateY(-50%);
+
+      color: #24242c;
+
+      background:
+        rgba(255, 255, 255, 0.4);
+
+      border-radius: 15px;
+
+      cursor: pointer;
+
+      transition:
+        transform 180ms ease,
+        background 180ms ease;
+    }
+
+    #search-submit:hover {
+      transform:
+        translateY(-50%)
+        scale(1.06);
+
+      background:
+        rgba(255, 255, 255, 0.75);
+    }
+
+    #search-submit svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    /* ========================================
+       ЗАМЕТКА
+       ======================================== */
+
+    #notes-container {
+      width: min(590px, 100%);
+    }
+
+    #notes {
+      width: 100%;
+      min-height: 85px;
+
+      padding: 16px 18px;
+
+      resize: vertical;
+
+      color: white;
+
+      outline: none;
+
+      background:
+        rgba(0, 0, 0, 0.14);
+
+      backdrop-filter:
+        blur(12px);
+
+      -webkit-backdrop-filter:
+        blur(12px);
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.18);
+
+      border-radius: 18px;
+
+      opacity: 0.18;
+
+      transition:
+        opacity 250ms ease,
+        background 250ms ease;
+    }
+
+    #notes:hover,
+    #notes:focus {
+      opacity: 1;
+
+      background:
+        rgba(0, 0, 0, 0.25);
+    }
+
+    #notes::placeholder {
+      color:
+        rgba(255, 255, 255, 0.7);
+    }
+
+    /* ========================================
+       ЛЕВАЯ ПАНЕЛЬ ССЫЛОК
+       ======================================== */
+
+    #linkblocks {
+      position: fixed;
+      top: 50%;
+      left: 32px;
+
+      padding: 18px 12px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+
+      transform: translateY(-50%);
+
+      background:
+        var(--glass-background);
+
+      backdrop-filter:
+        blur(20px)
+        saturate(140%);
+
+      -webkit-backdrop-filter:
+        blur(20px)
+        saturate(140%);
+
+      border:
+        1px solid
+        var(--glass-border);
+
+      border-radius: 34px;
+
+      box-shadow:
+        0 15px 35px
+        rgba(0, 0, 0, 0.22);
+    }
+
+    .quick-link {
+      position: relative;
+
+      width: 54px;
+      height: 54px;
+
+      display: grid;
+      place-items: center;
+
+      text-decoration: none;
+
+      background:
+        rgba(255, 255, 255, 0.13);
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.16);
+
+      border-radius: 18px;
+
+      transition:
+        transform 180ms ease,
+        background 180ms ease;
+    }
+
+    .quick-link:hover {
+      transform: scale(1.12);
+
+      background:
+        rgba(255, 255, 255, 0.3);
+    }
+
+    .quick-link img {
+      width: 30px;
+      height: 30px;
+
+      object-fit: contain;
+
+      pointer-events: none;
+    }
+
+
+
+    .quick-link:hover::after {
+      opacity: 1;
+
+      transform:
+        translateY(-50%)
+        translateX(0);
+    }
+
+    /* ========================================
+       КНОПКА НАСТРОЕК
+       ======================================== */
+
+    #settings-button {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+
+      width: 52px;
+      height: 52px;
+
+      display: grid;
+      place-items: center;
+
+      color: white;
+
+      background:
+        rgba(20, 20, 28, 0.38);
+
+      backdrop-filter:
+        blur(18px);
+
+      -webkit-backdrop-filter:
+        blur(18px);
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.25);
+
+      border-radius: 18px;
+
+      box-shadow:
+        0 10px 30px
+        rgba(0, 0, 0, 0.25);
+
+      cursor: pointer;
+
+      z-index: 1001;
+
+      transition:
+        transform 200ms ease,
+        background 200ms ease;
+    }
+
+    #settings-button:hover {
+      transform:
+        scale(1.08)
+        rotate(15deg);
+
+      background:
+        rgba(20, 20, 28, 0.62);
+    }
+
+    #settings-button svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* ========================================
+       ЗАТЕМНЕНИЕ ПОД НАСТРОЙКАМИ
+       ======================================== */
+
+    #settings-overlay {
+      position: fixed;
+      inset: 0;
+
+      background:
+        rgba(0, 0, 0, 0.25);
+
+      opacity: 0;
+
+      visibility: hidden;
+
+      z-index: 998;
+
+      transition:
+        opacity 200ms ease,
+        visibility 200ms ease;
+    }
+
+    #settings-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ========================================
+       ПАНЕЛЬ НАСТРОЕК
+       ======================================== */
+
+    #settings-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+
+      width: min(520px, 100vw);
+      height: 100vh;
+
+      padding: 22px;
+
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      background:
+        rgba(19, 20, 28, 0.94);
+
+      backdrop-filter:
+        blur(30px)
+        saturate(130%);
+
+      -webkit-backdrop-filter:
+        blur(30px)
+        saturate(130%);
+
+      border-left:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+
+      box-shadow:
+        -20px 0 60px
+        rgba(0, 0, 0, 0.35);
+
+      transform:
+        translateX(105%);
+
+      z-index: 1000;
+
+      transition:
+        transform 260ms ease;
+    }
+
+    #settings-panel.open {
+      transform: translateX(0);
+    }
+
+    .settings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .settings-title {
+      margin: 0;
+
+      font-size: 22px;
+      font-weight: 650;
+    }
+
+    .settings-description {
+      margin: -7px 0 0;
+
+      color:
+        rgba(255, 255, 255, 0.65);
+
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    #close-settings {
+      width: 40px;
+      height: 40px;
+
+      display: grid;
+      place-items: center;
+
+      color: white;
+
+      background:
+        rgba(255, 255, 255, 0.1);
+
+      border-radius: 13px;
+
+      cursor: pointer;
+    }
+
+    #close-settings:hover {
+      background:
+        rgba(255, 255, 255, 0.18);
+    }
+
+    /* ========================================
+       CSS-РЕДАКТОР
+       ======================================== */
+
+    #css-editor {
+      width: 100%;
+      flex: 1;
+
+      min-height: 260px;
+
+      padding: 17px;
+
+      resize: none;
+
+      color: #d8f3dc;
+      caret-color: white;
+
+      font-family:
+        Consolas,
+        Monaco,
+        "Courier New",
+        monospace;
+
+      font-size: 14px;
+      line-height: 1.55;
+
+      outline: none;
+
+      background:
+        rgba(0, 0, 0, 0.36);
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.12);
+
+      border-radius: 16px;
+
+      tab-size: 2;
+    }
+
+    #css-editor:focus {
+      border-color:
+        rgba(255, 255, 255, 0.32);
+    }
+
+    .settings-actions {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 10px;
+    }
+
+    .settings-action {
+      min-height: 43px;
+
+      padding: 10px 14px;
+
+      color: white;
+
+      background:
+        rgba(255, 255, 255, 0.1);
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.1);
+
+      border-radius: 13px;
+
+      cursor: pointer;
+
+      transition:
+        background 160ms ease,
+        transform 160ms ease;
+    }
+
+    .settings-action:hover {
+      background:
+        rgba(255, 255, 255, 0.18);
+
+      transform:
+        translateY(-1px);
+    }
+
+    #reset-css {
+      background:
+        rgba(174, 49, 49, 0.3);
+    }
+
+    #reset-css:hover {
+      background:
+        rgba(174, 49, 49, 0.48);
+    }
+
+    #editor-status {
+      min-height: 20px;
+
+      margin: 0;
+
+      color:
+        rgba(255, 255, 255, 0.6);
+
+      font-size: 13px;
+    }
+
+    /* ========================================
+       АДАПТАЦИЯ
+       ======================================== */
+
+    @media (max-width: 850px) {
+      body {
+        overflow: auto;
+      }
+
+      #interface {
+        position: relative;
+        top: auto;
+        left: auto;
+
+        width:
+          calc(100% - 30px);
+
+        min-height:
+          calc(100vh - 150px);
+
+        margin:
+          100px auto 30px;
+
+        padding:
+          35px 22px;
+
+        transform: none;
+      }
+
+      #linkblocks {
+        top: 18px;
+        left: 50%;
+
+        max-width:
+          calc(100vw - 100px);
+
+        padding: 9px 13px;
+
+        flex-direction: row;
+
+        overflow-x: auto;
+
+        transform:
+          translateX(-50%);
+      }
+
+      .quick-link::after {
+        display: none;
+      }
+
+      #settings-button {
+        right: 15px;
+        bottom: 15px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      #clock {
+        font-size: 58px;
+      }
+
+      #interface {
+        gap: 25px;
+      }
+
+      .settings-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       КАЛЕНДАРЬ (iOS style)
+       ======================================== */
+
+    .calendar-card {
+      width: min(260px, 100%);
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 24px;
+      padding: 18px 20px;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .month-header {
+      text-align: center;
+      font-size: 19px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .calendar-divider {
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.15);
+      margin-bottom: 12px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      row-gap: 8px;
+      text-align: center;
+    }
+
+    .weekday {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .day {
+      font-size: 14px;
+      font-weight: 500;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+    }
+
+    .day.empty {
+      visibility: hidden;
+    }
+
+    .day.today {
+      background-color: #ffffff;
+      color: #000000;
+      border-radius: 8px;
+      font-weight: 700;
+    }
+
+    /* Отдельный виджет-картинка */
+#free-image-widget {
+  position: fixed;
+  top: 50px;
+  left: 50px;
+  z-index: 9999 !important; /* Гарантирует, что картинка будет ПОВЕРХ панели */
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+
+#free-image-widget:active {
+  cursor: grabbing;
+}
+
+#free-image-widget img {
+  width: 340px; /* Здесь можете изменить ширину картинки */
+  height: auto;
+  display: block;
+  border-radius: 18px;
+  pointer-events: none;
+}
+
+
+  </style>
+
+  <!-- Сюда JavaScript помещает пользовательский CSS -->
+  <style id="custom-style"></style>
+  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+</head>
+
+<body>
+
+  <!-- Левая панель ссылок -->
+  <nav id="linkblocks" aria-label="Быстрые ссылки">
+
+    <a
+      class="quick-link"
+      href="https://youtube.com"
+      data-title="YouTube"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <img
+        src="https://www.google.com/s2/favicons?domain=youtube.com&sz=128"
+        alt="YouTube"
+      >
+    </a>
+
+    <a
+  class="quick-link"
+  href="https://open.spotify.com"
+  data-title="Spotify"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <img
+    src="https://www.google.com/s2/favicons?domain=spotify.com&sz=128"
+    alt="Spotify"
+  >
+</a>
+
+<a
+  class="quick-link"
+  href="https://pinterest.com"
+  data-title="Pinterest"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <img
+    src="https://www.google.com/s2/favicons?domain=pinterest.com&sz=128"
+    alt="Pinterest"
+  >
+</a>
+
+
+  </nav>
+
+
+  <!-- Главная панель -->
+  <main id="interface">
+    
+    
+    
+    <section id="time">
+      <h1 id="clock">00:00:00</h1>
+      <p id="date">Загрузка даты...</p>
+    </section>
+
+
+    <form
+      id="search-form"
+      action="https://www.google.com/search"
+      method="get"
+    >
+      <div id="searchbar-wrapper">
+
+        <svg
+          id="search-icon"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            fill="currentColor"
+            d="M9.5 3a6.5 6.5 0 1 0 3.99 11.63l4.44 4.44a1 1 0 0 0 1.41-1.41l-4.44-4.44A6.5 6.5 0 0 0 9.5 3Zm-4.5 6.5a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Z"
+          />
+        </svg>
+
+        <input
+          id="searchbar"
+          type="search"
+          name="q"
+          placeholder="Поиск в Google"
+          autocomplete="off"
+          aria-label="Поиск в Google"
+        >
+
+        <button
+          id="search-submit"
+          type="submit"
+          aria-label="Найти"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              fill="currentColor"
+              d="m8.7 16.7 1.4 1.4L16.2 12l-6.1-6.1-1.4 1.4 3.7 3.7H4v2h8.4l-3.7 3.7Z"
+            />
+          </svg>
+        </button>
+
+      </div>
+    </form>
+
+
+    <section id="notes-container">
+      <textarea
+        id="notes"
+        placeholder="Заметка..."
+        aria-label="Заметки"
+      ></textarea>
+    </section>
+
+<!-- Блок Календаря -->
+    <section class="calendar-card">
+      <div class="month-header" id="month-title"></div>
+      <div class="calendar-divider"></div>
+      
+      <div class="calendar-grid">
+        <div class="weekday">S</div>
+        <div class="weekday">M</div>
+        <div class="weekday">T</div>
+        <div class="weekday">W</div>
+        <div class="weekday">T</div>
+        <div class="weekday">F</div>
+        <div class="weekday">S</div>
+      </div>
+      
+      <div class="calendar-grid" id="days-container" style="margin-top: 8px;"></div>
+    </section>
+  </main>
+
+
+  <!-- Затемнение -->
+  <div id="settings-overlay"></div>
+
+
+  <!-- Панель настроек -->
+  <aside
+    id="settings-panel"
+    aria-hidden="true"
+  >
+    <div class="settings-header">
+
+      <h2 class="settings-title">
+        Пользовательский CSS
+      </h2>
+
+      <button
+        id="close-settings"
+        type="button"
+        aria-label="Закрыть настройки"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <p class="settings-description">
+      Пиши CSS ниже. Все изменения применяются сразу
+      и сохраняются в браузере автоматически.
+    </p>
+
+    <textarea
+      id="css-editor"
+      spellcheck="false"
+      aria-label="Редактор пользовательского CSS"
+    ></textarea>
+
+    <div class="settings-actions">
+
+      <button
+        id="copy-css"
+        class="settings-action"
+        type="button"
+      >
+        Копировать
+      </button>
+
+      <button
+        id="download-css"
+        class="settings-action"
+        type="button"
+      >
+        Скачать CSS
+      </button>
+
+      <button
+        id="reset-css"
+        class="settings-action"
+        type="button"
+      >
+        Сбросить
+      </button>
+      <button id="reset-layout" class="settings-action" type="button">Сбросить виджеты</button>
+    </div>
+
+    <p id="editor-status"></p>
+  </aside>
+
+
+  <!-- Кнопка шестерёнки -->
+  <button
+    id="settings-button"
+    type="button"
+    aria-label="Открыть настройки"
+  >
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path
+        fill="currentColor"
+        d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.1 7.1 0 0 0-1.62-.94L14.38 2.8a.49.49 0 0 0-.49-.4h-3.84a.49.49 0 0 0-.49.4L9.2 5.32c-.58.24-1.12.55-1.62.94l-2.39-.96a.49.49 0 0 0-.61.22L2.66 8.84a.49.49 0 0 0 .12.64l2.03 1.58c-.05.31-.08.65-.08.94s.03.63.08.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.12.22.38.31.61.22l2.39-.96c.5.39 1.04.71 1.62.94l.36 2.52c.04.24.24.4.49.4h3.84c.25 0 .45-.16.49-.4l.36-2.52c.58-.24 1.12-.55 1.62-.94l2.39.96c.23.09.49 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.02-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"
+      />
+    </svg>
+  </button>
+
+<!-- Свободная картинка вне панели -->
+<div id="free-image-widget">
+  <img src="https://www.image2url.com/r2/default/images/1785799639605-df80e18f-ecfb-4fab-a87f-614d5a9cc2a5.png" alt="anime-pic" />
+</div>
+
+  <script>
+    "use strict";
+
+    /*
+      Ключи localStorage.
+      Через них сохраняются CSS и заметки.
+    */
+    const STORAGE_KEYS = {
+      customCss: "startpage-custom-css",
+      notes: "startpage-notes"
+    };
+
+
+    /*
+      Начальный CSS, который появится в редакторе
+      при первом запуске страницы.
+    */
+    const DEFAULT_CUSTOM_CSS = `/* Здесь можно менять страницу в реальном времени */
+
+/* Пример: ширина центральной панели */
+#interface {
+  width: min(900px, calc(100vw - 220px));
+}
+
+/* Пример: размер часов */
+#clock {
+  font-size: 90px;
+}
+
+/* Пример: положение левой панели */
+#linkblocks {
+  left: 32px;
+}
+
+/* Пример: форма панели */
+.quick-link {
+  border-radius: 18px;
+}
+`;
+
+
+    /*
+      Получаем элементы страницы.
+    */
+    const clockElement =
+      document.getElementById("clock");
+
+    const dateElement =
+      document.getElementById("date");
+
+    const notesElement =
+      document.getElementById("notes");
+
+    const settingsButton =
+      document.getElementById("settings-button");
+
+    const settingsPanel =
+      document.getElementById("settings-panel");
+
+    const settingsOverlay =
+      document.getElementById("settings-overlay");
+
+    const closeSettingsButton =
+      document.getElementById("close-settings");
+
+    const cssEditor =
+      document.getElementById("css-editor");
+
+    const customStyle =
+      document.getElementById("custom-style");
+
+    const copyCssButton =
+      document.getElementById("copy-css");
+
+    const downloadCssButton =
+      document.getElementById("download-css");
+
+    const resetCssButton =
+      document.getElementById("reset-css");
+
+    const editorStatus =
+      document.getElementById("editor-status");
+
+
+/*
+  Обновление часов и даты.
+*/
+function updateClock() {
+  const now = new Date();
+
+  // Отнимаем 3 часа от текущего времени
+  now.setHours(now.getHours() - 3);
+
+  clockElement.textContent =
+    now.toLocaleTimeString("ru-RU", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+  // Получаем день недели с заглавной буквы
+  const weekday = now.toLocaleDateString("ru-RU", { weekday: "long" });
+  const formattedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+
+  // Получаем дату в формате ДД/ММ/ГГГГ
+  const dateFormatted = now.toLocaleDateString("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  }); // вернет "04.08.2026", меняем точки на слэши: dateFormatted.replace(/\./g, "/")
+
+  // Итоговый вид: "Вторник, 04/08/2026"
+  dateElement.textContent = `${formattedWeekday}, ${dateFormatted.replace(/\./g, "/")}`;
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+/*
+  Вычисление и отрисовка календаря
+*/
+function renderCalendar() {
+  const now = new Date();
+  // Учитываем то же смещение во времени (-3 часа), что и у ваших часов
+  now.setHours(now.getHours() - 3);
+
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const currentDate = now.getDate();
+
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const monthTitle = document.getElementById('month-title');
+  const daysContainer = document.getElementById('days-container');
+
+  if (!monthTitle || !daysContainer) return;
+
+  monthTitle.textContent = monthNames[currentMonth];
+  daysContainer.innerHTML = '';
+
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+  for (let i = 0; i < firstDay; i++) {
+    const emptyDiv = document.createElement('div');
+    emptyDiv.classList.add('day', 'empty');
+    daysContainer.appendChild(emptyDiv);
+  }
+
+  for (let day = 1; day <= totalDays; day++) {
+    const dayDiv = document.createElement('div');
+    dayDiv.classList.add('day');
+    dayDiv.textContent = day;
+
+    if (day === currentDate) {
+      dayDiv.classList.add('today');
+    }
+
+    daysContainer.appendChild(dayDiv);
+  }
+}
+
+renderCalendar();
+
+
+    /*
+      Открытие настроек.
+    */
+    function openSettings() {
+      settingsPanel.classList.add("open");
+      settingsOverlay.classList.add("open");
+
+      settingsPanel.setAttribute(
+        "aria-hidden",
+        "false"
+      );
+
+      setTimeout(() => {
+        cssEditor.focus();
+      }, 200);
+    }
+
+
+    /*
+      Закрытие настроек.
+    */
+    function closeSettings() {
+      settingsPanel.classList.remove("open");
+      settingsOverlay.classList.remove("open");
+
+      settingsPanel.setAttribute(
+        "aria-hidden",
+        "true"
+      );
+    }
+
+
+    settingsButton.addEventListener(
+      "click",
+      openSettings
+    );
+
+    closeSettingsButton.addEventListener(
+      "click",
+      closeSettings
+    );
+
+    settingsOverlay.addEventListener(
+      "click",
+      closeSettings
+    );
+
+
+    /*
+      Закрытие панели по Escape.
+    */
+    document.addEventListener(
+      "keydown",
+      event => {
+        if (event.key === "Escape") {
+          closeSettings();
+        }
+      }
+    );
+
+
+    /*
+      Вывод краткого статуса.
+    */
+    let statusTimeout;
+
+    function showStatus(message) {
+      editorStatus.textContent = message;
+
+      clearTimeout(statusTimeout);
+
+      statusTimeout = setTimeout(() => {
+        editorStatus.textContent = "";
+      }, 1800);
+    }
+
+
+    /*
+      Применение CSS к странице.
+    */
+    function applyCustomCss(css) {
+      customStyle.textContent = css;
+    }
+
+
+    /*
+      Сохранение CSS.
+    */
+    function saveCustomCss(css) {
+      localStorage.setItem(
+        STORAGE_KEYS.customCss,
+        css
+      );
+    }
+
+
+    /*
+      Загружаем ранее сохранённый CSS.
+    */
+    function loadCustomCss() {
+      const savedCss =
+        localStorage.getItem(
+          STORAGE_KEYS.customCss
+        );
+
+      const css =
+        savedCss !== null
+          ? savedCss
+          : DEFAULT_CUSTOM_CSS;
+
+      cssEditor.value = css;
+      applyCustomCss(css);
+    }
+
+    loadCustomCss();
+
+
+    /*
+      Изменение CSS в реальном времени.
+    */
+    cssEditor.addEventListener(
+      "input",
+      () => {
+        const css = cssEditor.value;
+
+        applyCustomCss(css);
+        saveCustomCss(css);
+
+        showStatus("Сохранено автоматически");
+      }
+    );
+
+
+    /*
+      Поддержка Tab внутри textarea.
+      Иначе Tab переключал бы фокус.
+    */
+    cssEditor.addEventListener(
+      "keydown",
+      event => {
+        if (event.key !== "Tab") {
+          return;
+        }
+
+        event.preventDefault();
+
+        const start =
+          cssEditor.selectionStart;
+
+        const end =
+          cssEditor.selectionEnd;
+
+        const value =
+          cssEditor.value;
+
+        cssEditor.value =
+          value.substring(0, start) +
+          "  " +
+          value.substring(end);
+
+        cssEditor.selectionStart =
+          cssEditor.selectionEnd =
+            start + 2;
+
+        cssEditor.dispatchEvent(
+          new Event("input")
+        );
+      }
+    );
+
+
+    /*
+      Копирование CSS.
+    */
+    copyCssButton.addEventListener(
+      "click",
+      async () => {
+        try {
+          await navigator.clipboard.writeText(
+            cssEditor.value
+          );
+
+          showStatus("CSS скопирован");
+        } catch (error) {
+          cssEditor.select();
+
+          document.execCommand("copy");
+
+          showStatus("CSS скопирован");
+        }
+      }
+    );
+
+
+    /*
+      Скачивание CSS-файла.
+    */
+    downloadCssButton.addEventListener(
+      "click",
+      () => {
+        const blob = new Blob(
+          [cssEditor.value],
+          {
+            type: "text/css;charset=utf-8"
+          }
+        );
+
+        const url =
+          URL.createObjectURL(blob);
+
+        const link =
+          document.createElement("a");
+
+        link.href = url;
+        link.download = "custom-style.css";
+
+        document.body.appendChild(link);
+
+        link.click();
+        link.remove();
+
+        URL.revokeObjectURL(url);
+
+        showStatus("CSS-файл скачан");
+      }
+    );
+
+
+    /*
+      Сброс пользовательского CSS.
+    */
+    resetCssButton.addEventListener(
+      "click",
+      () => {
+        const accepted =
+          window.confirm(
+            "Сбросить пользовательские стили?"
+          );
+
+        if (!accepted) {
+          return;
+        }
+
+        cssEditor.value =
+          DEFAULT_CUSTOM_CSS;
+
+        applyCustomCss(
+          DEFAULT_CUSTOM_CSS
+        );
+
+        saveCustomCss(
+          DEFAULT_CUSTOM_CSS
+        );
+
+        showStatus("Стили сброшены");
+      }
+    );
+
+
+    /*
+      Сохранение заметок.
+    */
+    const savedNotes =
+      localStorage.getItem(
+        STORAGE_KEYS.notes
+      );
+
+    if (savedNotes !== null) {
+      notesElement.value = savedNotes;
+    }
+
+    notesElement.addEventListener(
+      "input",
+      () => {
+        localStorage.setItem(
+          STORAGE_KEYS.notes,
+          notesElement.value
+        );
+      }
+    );
+
+    /* ========================================
+   СВОБОДНОЕ ПЕРЕМЕЩЕНИЕ, СОХРАНЕНИЕ И ОТМЕНА (CTRL+Z)
+   ======================================== */
+
+// 1. Позиции по умолчанию
+const defaultPositions = {
+  "time": { x: 40, y: 40 },
+  "search-form": { x: 450, y: 40 },
+  "calendar-card": { x: 40, y: 200 },
+  "notes-container": { x: 450, y: 150 },
+  "free-image-widget": { x: 50, y: 50 } // <--- ДОБАВЬТЕ ЭТУ СТРОКУ
+};
+
+// Загружаем сохраненные позиции или берем дефолтные
+let savedPositions = JSON.parse(localStorage.getItem("startpage-widget-positions")) || structuredClone(defaultPositions);
+
+// Стек истории для отмены действий (Ctrl + Z)
+const historyStack = [];
+
+// Применение позиций к элементам на странице
+function applyPositions() {
+  Object.keys(savedPositions).forEach(id => {
+    let el = document.getElementById(id) || document.querySelector('.' + id);
+
+    if (el) {
+      const pos = savedPositions[id];
+      el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+      el.setAttribute('data-x', pos.x);
+      el.setAttribute('data-y', pos.y);
+    }
+  });
+}
+
+// Настройка перетаскивания (interact.js)
+interact('#interface > section, #interface > form, #free-image-widget').draggable({
+  inertia: true,
+  modifiers: [
+    interact.modifiers.restrictRect({
+      restriction: 'parent',
+      endOnly: true
+    })
+  ],
+  listeners: {
+    start(event) {
+      // Запоминаем состояние перед началом нового перемещения (для отмены)
+      historyStack.push(structuredClone(savedPositions));
+      if (historyStack.length > 20) historyStack.shift(); // Ограничиваем историю 20 шагами
+    },
+    move(event) {
+      const target = event.target;
+      const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+      const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+      target.style.transform = `translate(${x}px, ${y}px)`;
+      target.setAttribute('data-x', x);
+      target.setAttribute('data-y', y);
+    },
+    end(event) {
+      const target = event.target;
+      const key = target.id || target.className.split(' ')[0];
+      
+      savedPositions[key] = {
+        x: parseFloat(target.getAttribute('data-x')),
+        y: parseFloat(target.getAttribute('data-y'))
+      };
+      
+      localStorage.setItem("startpage-widget-positions", JSON.stringify(savedPositions));
+    }
+  }
+});
+
+// Отмена последнего действия (Ctrl + Z / Cmd + Z)
+function undoLastMove() {
+  if (historyStack.length > 0) {
+    savedPositions = historyStack.pop();
+    localStorage.setItem("startpage-widget-positions", JSON.stringify(savedPositions));
+    applyPositions();
+    if (typeof showStatus === "function") showStatus("Действие отменено (Ctrl+Z)");
+  }
+}
+
+// Сброс всех позиций на начальные
+function resetPositions() {
+  historyStack.push(structuredClone(savedPositions));
+  savedPositions = structuredClone(defaultPositions);
+  localStorage.setItem("startpage-widget-positions", JSON.stringify(savedPositions));
+  applyPositions();
+  if (typeof showStatus === "function") showStatus("Позиции сброшены");
+}
+
+// Слушатель горячих клавиш (Ctrl + Z / Cmd + Z)
+document.addEventListener("keydown", event => {
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
+    // Не отменяем, если пользователь печатает в заметках или поиске
+    if (["input", "textarea"].includes(document.activeElement.tagName.toLowerCase())) {
+      return;
+    }
+    event.preventDefault();
+    undoLastMove();
+  }
+});
+
+// Запуск при загрузке
+applyPositions();
+document.getElementById("reset-layout")?.addEventListener("click", () => {
+  resetPositions();
+});
+  </script>
+
+</body>
+</html>
