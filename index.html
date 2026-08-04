@@ -295,32 +295,37 @@
     /* --- СТИЛИ ДЛЯ ПОИСКОВИКА-КАПСУЛЫ --- */
 
 /* Глобальный контейнер (само горизонтальное тело капсулы) */
+/* Обновленные стили для .search-container-capsule */
 .search-container-capsule {
-    display: flex; /* Выстраиваем элементы в ряд */
-    align-items: center; /* Центрируем по вертикали */
+    display: flex;
+    align-items: center;
     
-    /* Пример расположения на странице: */
+    /* ✅ Замените центрирование transform на фиксированное позиционирование ✅ */
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Центрируем точно по центру экрана */
+    top: 50%; /* Старт по центру вертикали */
+    left: calc(50% - 200px); /* Старт по центру горизонтали (учитывая ширину 400px) */
     
-    /* Стилизация тела: */
-    width: 400px; /* Ширина капсулы */
-    height: 50px; /* Высота капсулы */
-    background-color: #f1b3b5; /* Базовый цвет фона (розовый с вашей картинки, поменяйте на нужный) */
+    /* ❌ УДАЛИТЕ ИЛИ ЗАКОММЕНТИРУЙТЕ ЭТУ СТРОКУ ❌ */
+    /* transform: translate(-50%, -50%); */
     
-    /* Скругление для создания "капсулы" */
-    border-radius: 25px; /* Должно быть равно половине высоты */
+    width: 400px;
+    height: 50px;
+    background-color: #f1b3b5;
+    border-radius: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), 0 0 15px rgba(241, 179, 181, 0.5);
+    padding: 3px;
+    box-sizing: border-box;
+    overflow: hidden;
     
-    /* Эффект тени и свечения (как на картинке) */
-    box-shadow: 
-        0 4px 10px rgba(0, 0, 0, 0.1), /* Мягкая тень вниз */
-        0 0 15px rgba(241, 179, 181, 0.5); /* Внешнее розовое свечение */
-    
-    padding: 3px; /* Внутренний отступ для центрирования кнопки */
-    box-sizing: border-box; /* Чтобы padding не увеличивал размер */
-    overflow: hidden; /* Чтобы текст не вылезал */
+    /* ✅ Важно для перетаскивания: touch-action ✅ */
+    touch-action: none;
+    user-select: none;
+    cursor: grab; /* Курсор руки, когда можно тащить */
+}
+
+/* ✅ Эффект при клике: рука сжимается ✅ */
+.search-container-capsule:active {
+    cursor: grabbing;
 }
 
 /* Стили для круглой кнопки с иконкой (слева) */
@@ -1849,6 +1854,44 @@ document.getElementById("reset-layout")?.addEventListener("click", () => {
     searchInput.focus();
   }
 });
+    // 1. Укажите селектор вашего нового поисковика-капсулы
+    const searchCapsuleSelector = '.search-container-capsule';
+
+    // 2. Инициализируйте interact.js для этого селектора
+    interact(searchCapsuleSelector)
+        .draggable({
+            // Включаем инерцию для плавности
+            inertia: true,
+            // Ограничиваем перетаскивание пределами окна браузера
+            modifiers: [
+                interact.modifiers.restrictRect({
+                    restriction: 'window',
+                    endOnly: true
+                })
+            ],
+            // Включаем автопрокрутку
+            autoScroll: true,
+
+            // Слушаем события перемещения
+            listeners: {
+                move: dragMoveListener,
+            }
+        });
+
+    // 3. Стандартная функция interact.js для изменения координат при перетаскивании
+    function dragMoveListener (event) {
+        var target = event.target;
+        // сохраняем позицию в атрибутах data-x/data-y
+        var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+        var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+        // применяем CSS transform к элементу
+        target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+
+        // обновляем позицию в атрибутах
+        target.setAttribute('data-x', x);
+        target.setAttribute('data-y', y);
+    }
   </script>
 
 </body>
