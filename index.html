@@ -1742,6 +1742,13 @@ document.getElementById("reset-layout")?.addEventListener("click", () => {
     loader.classList.add('hidden');
   }, 300);
 });
+    window.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('search-input'); // Замените id на ID вашего поля поиска
+  
+  if (searchInput) {
+    searchInput.focus();
+  }
+});
   </script>
 
 </body>
