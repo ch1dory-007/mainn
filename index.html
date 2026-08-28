@@ -602,6 +602,17 @@
     }
     .loader-text { margin-top: 15px; color: #fff; font-family: sans-serif; font-size: 14px; letter-spacing: 1px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* ===== Адаптация картинки при высоте окна > 550px ===== */
+@media (min-height: 551px) {
+  #free-image-widget {
+    top: 80px;    /* Измените под свои нужды */
+    left: 100px;  /* Измените под свои нужды */
+  }
+  #free-image-widget img {
+    width: clamp(220px, 30vw, 400px); /* Измените под свои нужды */
+  }
+}
   </style>
 
   <style id="custom-style"></style>
