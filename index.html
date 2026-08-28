@@ -604,15 +604,7 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     /* ===== Адаптация картинки при высоте окна > 550px ===== */
-@media (min-height: 551px) {
-  #free-image-widget {
-    top: 100px;    /* Измените под свои нужды */
-    left: 100px;  /* Измените под свои нужды */
-  }
-  #free-image-widget img {
-    width: clamp(220px, 30vw, 380px); /* Измените под свои нужды */
-  }
-}
+
   </style>
 
   <style id="custom-style"></style>
@@ -1096,6 +1088,47 @@
         }
       }
     });
+
+    // ===== Отслеживание полноэкранного режима для картинки =====
+function updateImageForFullscreen() {
+  const isFullscreen = document.fullscreenElement || 
+                       document.webkitFullscreenElement || 
+                       document.mozFullScreenElement || 
+                       document.msFullscreenElement;
+  
+  const imageWidget = document.getElementById('free-image-widget');
+  const imageEl = imageWidget?.querySelector('img');
+  
+  if (!imageWidget || !imageEl) return;
+  
+  // Проверяем высоту окна и полноэкранный режим
+  const windowHeight = window.innerHeight;
+  
+  if (windowHeight > 550 || isFullscreen) {
+    // Устанавливаем новые параметры для картинки
+    imageWidget.style.top = '140px';    // ← измените под свои нужды
+    imageWidget.style.left = '100px';  // ← измените под свои нужды
+    imageEl.style.width = 'clamp(220px, 30vw, 320px)'; // ← измените под свои нужды
+  } else {
+    // Возвращаем стандартные параметры
+    imageWidget.style.top = '50px';
+    imageWidget.style.left = '50px';
+    imageEl.style.width = 'clamp(180px, 25vw, 340px)';
+  }
+}
+
+// Слушаем изменения размера окна
+window.addEventListener('resize', updateImageForFullscreen);
+
+// Слушаем изменения полноэкранного режима
+document.addEventListener('fullscreenchange', updateImageForFullscreen);
+document.addEventListener('webkitfullscreenchange', updateImageForFullscreen);
+document.addEventListener('mozfullscreenchange', updateImageForFullscreen);
+document.addEventListener('MSFullscreenChange', updateImageForFullscreen);
+
+// Запускаем при загрузке страницы
+window.addEventListener('DOMContentLoaded', updateImageForFullscreen);
+    
   </script>
 </body>
 </html>
