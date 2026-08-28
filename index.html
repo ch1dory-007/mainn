@@ -213,7 +213,7 @@
       font-weight: 700;
     }
 
-    /* ===== Левая панель ссылок (виджеты) ===== */
+    /* ===== Левая панель виджетов ===== */
     #linkblocks {
       position: fixed;
       top: 50%;
@@ -222,8 +222,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
-      padding: 16px 10px;
+      gap: 14px;
+      padding: 20px 14px;
       background: var(--glass-background);
       backdrop-filter: blur(20px) saturate(140%);
       -webkit-backdrop-filter: blur(20px) saturate(140%);
@@ -234,13 +234,14 @@
       max-height: 80vh;
       overflow-y: auto;
       scrollbar-width: thin;
+      min-width: 68px;
     }
     #linkblocks::-webkit-scrollbar { width: 4px; }
     #linkblocks::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
     .quick-link {
       position: relative;
-      width: 48px;
-      height: 48px;
+      width: 54px;
+      height: 54px;
       display: grid;
       place-items: center;
       text-decoration: none;
@@ -251,39 +252,56 @@
       flex-shrink: 0;
     }
     .quick-link:hover { transform: scale(1.12); background: rgba(255,255,255,0.3); }
-    .quick-link img { width: 28px; height: 28px; object-fit: contain; pointer-events: none; }
-    .quick-link .remove-widget {
-      position: absolute;
-      top: -6px;
-      right: -6px;
-      width: 18px;
-      height: 18px;
+    .quick-link img { width: 30px; height: 30px; object-fit: contain; pointer-events: none; }
+    
+    /* Удаление виджетов - новая кнопка под иконкой */
+    .widget-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .widget-wrapper .remove-widget {
+      width: 20px;
+      height: 20px;
       background: rgba(220, 50, 50, 0.9);
       border-radius: 50%;
       color: #fff;
       font-size: 12px;
-      line-height: 18px;
+      line-height: 20px;
       text-align: center;
       cursor: pointer;
-      border: 1px solid #fff;
+      border: 1px solid rgba(255,255,255,0.3);
       opacity: 0;
-      transition: opacity 0.2s;
-      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      transform: scale(0.8);
+      flex-shrink: 0;
+      margin-top: -6px;
     }
-    .quick-link:hover .remove-widget { opacity: 1; pointer-events: auto; }
+    .widget-wrapper:hover .remove-widget {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .widget-wrapper .remove-widget:hover {
+      background: rgba(200, 30, 30, 1);
+      transform: scale(1.1);
+    }
+
     #add-widget-btn {
-      width: 48px;
-      height: 48px;
+      width: 54px;
+      height: 54px;
       border-radius: 18px;
       background: rgba(255,255,255,0.2);
-      border: 1px dashed rgba(255,255,255,0.4);
+      border: 2px dashed rgba(255,255,255,0.4);
       color: #fff;
-      font-size: 28px;
+      font-size: 32px;
       line-height: 1;
       display: grid;
       place-items: center;
       transition: background 0.2s, transform 0.2s;
       cursor: pointer;
+      flex-shrink: 0;
     }
     #add-widget-btn:hover { background: rgba(255,255,255,0.35); transform: scale(1.05); }
 
@@ -423,41 +441,139 @@
     }
 
     /* ===== Адаптивность ===== */
+    @media (max-width: 1024px) {
+      #interface {
+        width: min(900px, calc(100vw - 80px));
+        height: auto;
+        min-height: 500px;
+      }
+      #linkblocks {
+        left: 15px;
+        padding: 16px 10px;
+        gap: 12px;
+        min-width: 60px;
+      }
+      .quick-link, #add-widget-btn {
+        width: 48px;
+        height: 48px;
+      }
+      .quick-link img { width: 26px; height: 26px; }
+      .widget-wrapper .remove-widget {
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+        line-height: 18px;
+      }
+    }
+
     @media (max-width: 850px) {
-      body { overflow: auto; }
+      body { overflow-y: auto; }
       #interface {
         position: relative;
         top: auto;
         left: auto;
         width: calc(100% - 30px);
-        min-height: calc(100vh - 150px);
-        margin: 80px auto 30px;
-        padding: 25px 18px;
+        min-height: calc(100vh - 140px);
+        margin: 70px auto 20px;
+        padding: 20px 15px;
         transform: none;
         height: auto;
+        border-radius: 24px;
       }
+      #interface > * {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin: 8px 0;
+        width: 100% !important;
+        max-width: 100% !important;
+        cursor: default;
+      }
+      #interface > *:active {
+        cursor: default;
+        box-shadow: none;
+        z-index: auto;
+      }
+      #time { text-align: center; }
+      #clock { font-size: clamp(42px, 10vw, 70px); }
+      #notes-container { min-width: unset; }
+      #notes { min-height: 50px; }
+      .calendar-card { width: 100% !important; max-width: 320px; margin: 0 auto; }
+      
       #linkblocks {
-        top: 18px;
+        position: fixed;
+        top: 12px;
         left: 50%;
         transform: translateX(-50%);
         flex-direction: row;
         overflow-x: auto;
-        max-width: calc(100vw - 40px);
+        max-width: calc(100vw - 30px);
         padding: 10px 14px;
         gap: 10px;
+        border-radius: 28px;
+        min-width: unset;
+        width: auto;
+        max-height: 70px;
       }
-      .quick-link { width: 44px; height: 44px; }
-      .quick-link img { width: 24px; height: 24px; }
-      #add-widget-btn { width: 44px; height: 44px; font-size: 24px; }
-      .quick-link .remove-widget { display: none; }
-      #free-image-widget img { width: clamp(120px, 30vw, 220px); }
-      #settings-button { right: 15px; bottom: 15px; width: 44px; height: 44px; }
+      .quick-link, #add-widget-btn {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+      }
+      .quick-link img { width: 22px; height: 22px; }
+      .widget-wrapper .remove-widget {
+        display: none; /* Скрываем на мобильных */
+      }
+      #add-widget-btn { font-size: 24px; }
+      
+      #free-image-widget {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin: 10px auto;
+        width: fit-content;
+        cursor: default;
+      }
+      #free-image-widget img {
+        width: clamp(140px, 40vw, 260px);
+      }
+      #free-image-widget:active { cursor: default; }
+      
+      .search-container-capsule {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        width: 100%;
+        max-width: 400px;
+        margin: 5px auto;
+        cursor: default;
+      }
+      .search-container-capsule:active { cursor: default; }
+      
+      #settings-button {
+        right: 15px;
+        bottom: 15px;
+        width: 44px;
+        height: 44px;
+      }
+      #settings-button svg { width: 20px; height: 20px; }
     }
-    @media (max-width: 520px) {
-      #clock { font-size: 44px; }
-      #interface { gap: 20px; }
+
+    @media (max-width: 480px) {
+      #interface { padding: 14px 12px; margin: 60px auto 15px; }
+      #clock { font-size: 36px; }
+      #date { font-size: 13px; }
+      .search-container-capsule { height: 44px; }
+      .search-icon-button { width: 36px; height: 36px; }
+      .search-icon-button svg { width: 16px; height: 16px; }
+      #search-input { font-size: 14px; }
+      #notes { font-size: 13px; padding: 10px 14px; }
+      .calendar-card { padding: 10px 12px; }
+      .month-header { font-size: 16px; }
+      .day { font-size: 12px; height: 24px; }
       .settings-actions { grid-template-columns: 1fr; }
-      .search-container-capsule { width: 90vw; left: 5vw !important; }
     }
 
     /* ===== Экран загрузки ===== */
@@ -486,81 +602,6 @@
     }
     .loader-text { margin-top: 15px; color: #fff; font-family: sans-serif; font-size: 14px; letter-spacing: 1px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-    /* ===== To-Do ===== */
-    #todo-container {
-      background: rgba(0,0,0,0.2);
-      border-radius: 20px;
-      padding: 12px 14px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.1);
-      width: min(280px, 90%);
-      max-height: 200px;
-      overflow-y: auto;
-      scrollbar-width: thin;
-    }
-    #todo-container::-webkit-scrollbar { width: 4px; }
-    #todo-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
-    #todo-list { list-style: none; padding: 0; margin: 0; }
-    #todo-list li {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 4px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      font-size: 14px;
-    }
-    #todo-list li:last-child { border-bottom: none; }
-    #todo-list li input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: #f1b3b5;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    #todo-list li .todo-text {
-      flex: 1;
-      word-break: break-word;
-    }
-    #todo-list li .todo-text.done { text-decoration: line-through; opacity: 0.5; }
-    #todo-list li .delete-todo {
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.4);
-      font-size: 16px;
-      cursor: pointer;
-      padding: 0 4px;
-      transition: color 0.2s;
-    }
-    #todo-list li .delete-todo:hover { color: #ff6b6b; }
-    #todo-input-row {
-      display: flex;
-      gap: 6px;
-      margin-top: 8px;
-    }
-    #todo-input {
-      flex: 1;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 12px;
-      padding: 6px 12px;
-      color: #fff;
-      font-size: 13px;
-      outline: none;
-      min-width: 0;
-    }
-    #todo-input:focus { border-color: rgba(255,255,255,0.3); }
-    #todo-add-btn {
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 12px;
-      color: #fff;
-      padding: 6px 14px;
-      font-size: 13px;
-      transition: background 0.2s;
-      white-space: nowrap;
-    }
-    #todo-add-btn:hover { background: rgba(255,255,255,0.25); }
   </style>
 
   <style id="custom-style"></style>
@@ -572,7 +613,7 @@
   <!-- Загрузчик -->
   <div id="loader"><div class="spinner"></div><div class="loader-text">Загрузка...</div></div>
 
-  <!-- Левая панель виджетов (ссылки + кнопка добавления) -->
+  <!-- Левая панель виджетов -->
   <nav id="linkblocks" aria-label="Быстрые ссылки">
     <!-- Виджеты будут вставлены сюда через JS -->
     <button id="add-widget-btn" title="Добавить виджет">+</button>
@@ -610,16 +651,6 @@
       </div>
       <div class="calendar-grid" id="days-container" style="margin-top:6px;"></div>
     </section>
-
-    <!-- To-Do виджет (внутри панели) -->
-    <section id="todo-container" style="top:20px; right:30px; width:min(280px, 90%);">
-      <div style="font-weight:600; font-size:15px; margin-bottom:6px; opacity:0.8;">📋 To-Do</div>
-      <ul id="todo-list"></ul>
-      <div id="todo-input-row">
-        <input type="text" id="todo-input" placeholder="Новая задача..." autocomplete="off">
-        <button id="todo-add-btn">+</button>
-      </div>
-    </section>
   </main>
 
   <!-- Затемнение и настройки -->
@@ -656,11 +687,8 @@
     const STORAGE_KEYS = {
       customCss: "startpage-custom-css",
       notes: "startpage-notes",
-      todo: "startpage-todo",
       widgets: "startpage-widgets",
-      positions: "startpage-widget-positions",
-      searchPos: "search_x",
-      searchPosY: "search_y"
+      positions: "startpage-widget-positions"
     };
 
     const DEFAULT_WIDGETS = [
@@ -715,69 +743,10 @@
     if (savedNotes !== null) notesEl.value = savedNotes;
     notesEl.addEventListener('input', () => {
       localStorage.setItem(STORAGE_KEYS.notes, notesEl.value);
-      // Авто-высота
       notesEl.style.height = 'auto';
       notesEl.style.height = notesEl.scrollHeight + 'px';
     });
-    // Инициализация высоты
     setTimeout(() => { notesEl.style.height = 'auto'; notesEl.style.height = notesEl.scrollHeight + 'px'; }, 50);
-
-    // ===== To-Do =====
-    let todoItems = [];
-    const todoListEl = document.getElementById('todo-list');
-    const todoInput = document.getElementById('todo-input');
-    const todoAddBtn = document.getElementById('todo-add-btn');
-
-    function loadTodos() {
-      const data = localStorage.getItem(STORAGE_KEYS.todo);
-      if (data) todoItems = JSON.parse(data);
-      else todoItems = [];
-      renderTodos();
-    }
-    function saveTodos() {
-      localStorage.setItem(STORAGE_KEYS.todo, JSON.stringify(todoItems));
-    }
-    function renderTodos() {
-      todoListEl.innerHTML = '';
-      todoItems.forEach((item, index) => {
-        const li = document.createElement('li');
-        const cb = document.createElement('input');
-        cb.type = 'checkbox';
-        cb.checked = item.done;
-        cb.addEventListener('change', () => {
-          todoItems[index].done = cb.checked;
-          saveTodos();
-          renderTodos();
-        });
-        const span = document.createElement('span');
-        span.className = 'todo-text' + (item.done ? ' done' : '');
-        span.textContent = item.text;
-        const del = document.createElement('button');
-        del.className = 'delete-todo';
-        del.textContent = '✕';
-        del.addEventListener('click', () => {
-          todoItems.splice(index, 1);
-          saveTodos();
-          renderTodos();
-        });
-        li.appendChild(cb);
-        li.appendChild(span);
-        li.appendChild(del);
-        todoListEl.appendChild(li);
-      });
-    }
-    function addTodo() {
-      const text = todoInput.value.trim();
-      if (!text) return;
-      todoItems.push({ text, done: false });
-      saveTodos();
-      renderTodos();
-      todoInput.value = '';
-      todoInput.focus();
-    }
-    todoAddBtn.addEventListener('click', addTodo);
-    todoInput.addEventListener('keydown', e => { if (e.key === 'Enter') addTodo(); });
-    loadTodos();
 
     // ===== Виджеты (левая панель) =====
     const linkblocks = document.getElementById('linkblocks');
@@ -793,10 +762,13 @@
       localStorage.setItem(STORAGE_KEYS.widgets, JSON.stringify(widgets));
     }
     function renderWidgets() {
-      // Удаляем все, кроме кнопки добавления
       const addBtn = document.getElementById('add-widget-btn');
       linkblocks.innerHTML = '';
+      
       widgets.forEach((w, idx) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'widget-wrapper';
+        
         const a = document.createElement('a');
         a.className = 'quick-link';
         a.href = w.url;
@@ -807,24 +779,28 @@
         img.src = w.icon;
         img.alt = w.title;
         a.appendChild(img);
-        // Кнопка удаления
-        const remove = document.createElement('span');
+        wrapper.appendChild(a);
+        
+        // Кнопка удаления под иконкой
+        const remove = document.createElement('div');
         remove.className = 'remove-widget';
         remove.textContent = '✕';
+        remove.title = 'Удалить виджет';
         remove.addEventListener('click', (e) => {
-          e.preventDefault();
           e.stopPropagation();
           widgets.splice(idx, 1);
           saveWidgets();
           renderWidgets();
         });
-        a.appendChild(remove);
-        linkblocks.appendChild(a);
+        wrapper.appendChild(remove);
+        
+        linkblocks.appendChild(wrapper);
       });
+      
       linkblocks.appendChild(addBtn);
     }
 
-    // Добавление виджета (простой диалог)
+    // Добавление виджета
     document.getElementById('add-widget-btn').addEventListener('click', () => {
       const url = prompt('Введите URL (https://...):');
       if (!url) return;
@@ -840,12 +816,11 @@
 
     loadWidgets();
 
-    // ===== Перетаскивание (interact.js) + сохранение позиций =====
+    // ===== Перетаскивание (интерактивность) =====
     const defaultPositions = {
       "time": { x: 30, y: 20 },
       "notes-container": { x: 400, y: 120 },
       "calendar-card": { x: 30, y: 180 },
-      "todo-container": { x: 660, y: 20 },
       "free-image-widget": { x: 50, y: 50 }
     };
     let savedPositions = JSON.parse(localStorage.getItem(STORAGE_KEYS.positions)) || structuredClone(defaultPositions);
@@ -863,35 +838,114 @@
       });
     }
 
-    interact('#interface > section, #interface > form, #free-image-widget, #todo-container, .search-container-capsule').draggable({
-      inertia: true,
-      modifiers: [ interact.modifiers.restrictRect({ restriction: 'parent', endOnly: true }) ],
-      listeners: {
-        start(event) {
-          historyStack.push(structuredClone(savedPositions));
-          if (historyStack.length > 20) historyStack.shift();
-        },
-        move(event) {
-          const target = event.target;
-          const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-          const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-          target.style.transform = `translate(${x}px, ${y}px)`;
-          target.setAttribute('data-x', x);
-          target.setAttribute('data-y', y);
-        },
-        end(event) {
-          const target = event.target;
-          let key = target.id || target.className.split(' ')[0];
-          // Для поиска используем класс
-          if (target.classList.contains('search-container-capsule')) key = 'search-container-capsule';
-          savedPositions[key] = {
-            x: parseFloat(target.getAttribute('data-x')),
-            y: parseFloat(target.getAttribute('data-y'))
-          };
-          localStorage.setItem(STORAGE_KEYS.positions, JSON.stringify(savedPositions));
+    // Настройка перетаскивания с защитой от перемещения при вводе текста
+    function setupDraggable() {
+      // Элементы, которые можно перетаскивать
+      const draggableItems = document.querySelectorAll('#interface > section, #interface > form, #free-image-widget');
+      
+      draggableItems.forEach(el => {
+        // Отключаем перетаскивание на мобильных устройствах
+        if (window.innerWidth <= 850) {
+          interact(el).draggable(false);
+          return;
         }
+        
+        interact(el).draggable({
+          inertia: true,
+          modifiers: [
+            interact.modifiers.restrictRect({
+              restriction: 'parent',
+              endOnly: true
+            })
+          ],
+          listeners: {
+            start(event) {
+              // Проверяем, не является ли цель или её родитель полем ввода
+              const target = event.target;
+              const activeEl = document.activeElement;
+              if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+                return false; // Отменяем перетаскивание
+              }
+              historyStack.push(structuredClone(savedPositions));
+              if (historyStack.length > 20) historyStack.shift();
+            },
+            move(event) {
+              const target = event.target;
+              const activeEl = document.activeElement;
+              if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+                return false;
+              }
+              const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+              const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+              target.style.transform = `translate(${x}px, ${y}px)`;
+              target.setAttribute('data-x', x);
+              target.setAttribute('data-y', y);
+            },
+            end(event) {
+              const target = event.target;
+              const activeEl = document.activeElement;
+              if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+                return false;
+              }
+              let key = target.id || target.className.split(' ')[0];
+              savedPositions[key] = {
+                x: parseFloat(target.getAttribute('data-x')),
+                y: parseFloat(target.getAttribute('data-y'))
+              };
+              localStorage.setItem(STORAGE_KEYS.positions, JSON.stringify(savedPositions));
+            }
+          }
+        });
+      });
+
+      // Отдельная настройка для поиска с защитой
+      const searchEl = document.querySelector('.search-container-capsule');
+      if (searchEl && window.innerWidth > 850) {
+        interact(searchEl).draggable({
+          inertia: true,
+          modifiers: [
+            interact.modifiers.restrictRect({
+              restriction: 'parent',
+              endOnly: true
+            })
+          ],
+          listeners: {
+            start(event) {
+              const activeEl = document.activeElement;
+              if (activeEl && activeEl.id === 'search-input') {
+                return false;
+              }
+              historyStack.push(structuredClone(savedPositions));
+              if (historyStack.length > 20) historyStack.shift();
+            },
+            move(event) {
+              const activeEl = document.activeElement;
+              if (activeEl && activeEl.id === 'search-input') {
+                return false;
+              }
+              const target = event.target;
+              const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+              const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+              target.style.transform = `translate(${x}px, ${y}px)`;
+              target.setAttribute('data-x', x);
+              target.setAttribute('data-y', y);
+            },
+            end(event) {
+              const activeEl = document.activeElement;
+              if (activeEl && activeEl.id === 'search-input') {
+                return false;
+              }
+              const target = event.target;
+              savedPositions['search-container-capsule'] = {
+                x: parseFloat(target.getAttribute('data-x')),
+                y: parseFloat(target.getAttribute('data-y'))
+              };
+              localStorage.setItem(STORAGE_KEYS.positions, JSON.stringify(savedPositions));
+            }
+          }
+        });
       }
-    });
+    }
 
     function undoLastMove() {
       if (historyStack.length > 0) {
@@ -909,6 +963,11 @@
       showStatus('Позиции сброшены');
     }
 
+    // Применяем сохранённые позиции
+    applyPositions();
+    // Настраиваем перетаскивание
+    setTimeout(setupDraggable, 100);
+
     document.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
         if (['input','textarea'].includes(document.activeElement.tagName.toLowerCase())) return;
@@ -917,29 +976,13 @@
       }
     });
 
-    applyPositions();
     document.getElementById('reset-layout')?.addEventListener('click', resetPositions);
 
-    // ===== Поиск (сохранение позиции отдельно) =====
-    const searchCapsule = document.querySelector('.search-container-capsule');
-    const savedX = localStorage.getItem(STORAGE_KEYS.searchPos);
-    const savedY = localStorage.getItem(STORAGE_KEYS.searchPosY);
-    if (savedX !== null && savedY !== null) {
-      searchCapsule.style.transform = `translate(${savedX}px, ${savedY}px)`;
-      searchCapsule.setAttribute('data-x', savedX);
-      searchCapsule.setAttribute('data-y', savedY);
-    }
-    // Сохраняем позицию поиска при завершении перетаскивания через отдельный listener
-    interact('.search-container-capsule').draggable({
-      listeners: {
-        end(event) {
-          const target = event.target;
-          const x = target.getAttribute('data-x');
-          const y = target.getAttribute('data-y');
-          localStorage.setItem(STORAGE_KEYS.searchPos, x);
-          localStorage.setItem(STORAGE_KEYS.searchPosY, y);
-        }
-      }
+    // Перезапускаем перетаскивание при изменении размера окна
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(setupDraggable, 300);
     });
 
     // ===== Настройки (CSS) =====
@@ -998,6 +1041,50 @@
 
     // Фокус на поиск
     document.addEventListener('DOMContentLoaded', () => document.getElementById('search-input')?.focus());
+
+    // ===== Исправление: Защита от перемещения при выделении текста мышкой =====
+    document.addEventListener('mousedown', (e) => {
+      const target = e.target;
+      // Если клик на поле ввода или текстовой области - отключаем перетаскивание
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        // Запрещаем перетаскивание родительских элементов
+        const parent = target.closest('.search-container-capsule, #notes-container, #interface > section, #interface > form');
+        if (parent) {
+          parent.style.touchAction = 'auto';
+          parent.style.userSelect = 'text';
+        }
+      }
+    });
+
+    document.addEventListener('mouseup', (e) => {
+      const target = e.target;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        const parent = target.closest('.search-container-capsule, #notes-container, #interface > section, #interface > form');
+        if (parent) {
+          parent.style.touchAction = 'none';
+          parent.style.userSelect = 'none';
+        }
+      }
+    });
+
+    // Дополнительная защита: при фокусе на поле ввода отключаем cursor: grab
+    document.addEventListener('focusin', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        const parent = e.target.closest('.search-container-capsule, #notes-container, #interface > section, #interface > form, #free-image-widget');
+        if (parent) {
+          parent.style.cursor = 'default';
+        }
+      }
+    });
+
+    document.addEventListener('focusout', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        const parent = e.target.closest('.search-container-capsule, #notes-container, #interface > section, #interface > form, #free-image-widget');
+        if (parent && window.innerWidth > 850) {
+          parent.style.cursor = 'grab';
+        }
+      }
+    });
   </script>
 </body>
 </html>
