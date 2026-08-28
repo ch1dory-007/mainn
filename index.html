@@ -1106,14 +1106,14 @@ function updateImageForFullscreen() {
   
   if (windowHeight > 550 || isFullscreen) {
     // Устанавливаем новые параметры для картинки
-    imageWidget.style.top = '140px';    // ← измените под свои нужды
+    imageWidget.style.top = '300px';    // ← измените под свои нужды
     imageWidget.style.left = '100px';  // ← измените под свои нужды
-    imageEl.style.width = 'clamp(220px, 30vw, 320px)'; // ← измените под свои нужды
+    imageEl.style.width = 'clamp(220px, 30vw, 400px)'; // ← измените под свои нужды
   } else {
     // Возвращаем стандартные параметры
     imageWidget.style.top = '50px';
     imageWidget.style.left = '50px';
-    imageEl.style.width = 'clamp(180px, 25vw, 340px)';
+    imageEl.style.width = 'clamp(180px, 25vw, 320px)';
   }
 }
 
